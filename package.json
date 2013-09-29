@@ -1,0 +1,13 @@
+{
+  "name": "mmo-bombersquare",
+  "version": "0.0.1",
+  "dependencies": {
+      "now" : "0.8.x",
+      "prototype": "0.0.x",
+      "simplesets": "1.2.x"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.3.x"
+  }
+}
