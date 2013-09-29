@@ -176,9 +176,9 @@ server.listen( 8080 );
     
     function update() {
         // console.log("update");
-        classes.update_stuff(100);
+        classes.update_stuff(250);
         everyone.now.send_map();
-        setTimeout(update, 100);
+        setTimeout(update, 250);
     }
 
     update();
