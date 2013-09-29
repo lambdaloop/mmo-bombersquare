@@ -117,7 +117,7 @@ server.listen( 8080 );
     everyone.connected(
         function(){
             this.now.uuid = ++primaryKey;
-            everyone.now.send_map();
+            classes.create_player(this.now.uuid);
         }
     );
 
@@ -141,7 +141,10 @@ server.listen( 8080 );
         var m = classes.draw_stuff();
         everyone.now.update_game_map(m);
     };
-    
+
+    everyone.now.send_update = function(type) {
+        classes.send_update(this.now.uuid, type);
+    }
     
     // We want the "update" messages to go to every client except
     // the one that announced it (as it is taking care of that on
@@ -173,9 +176,9 @@ server.listen( 8080 );
     
     function update() {
         // console.log("update");
-        classes.update_stuff(500);
+        classes.update_stuff(100);
         everyone.now.send_map();
-        setTimeout(update, 500);
+        setTimeout(update, 100);
     }
 
     update();

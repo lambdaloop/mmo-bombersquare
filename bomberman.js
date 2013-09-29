@@ -29,10 +29,55 @@ var computer_image = null;
 var bomb_image = null;
 var explosion_image = null;
 
-var mapW = 100;
-var mapH = 100;
+var mapW = 37;
+var mapH = 18;
+
+var State = {
+    input: 0,
+    wait: 1
+};
+
+
+var UpdateType = {
+    up: 0,
+    down: 1,
+    left: 2,
+    right: 3,
+    bomb: 4
+}
+
+var curr_state = State.input;
+
+var SPACE = 32;
+
+var LEFT = 37;
+var UP = 38;
+var RIGHT = 39;
+var DOWN = 40;
+
+$j(document).keydown(function(e) {
+    // $("#console").html(e.which);
+    if (curr_state == State.wait) {
+        return;
+    }
+    
+    if (e.which == SPACE) {
+        e.preventDefault();
+        pressSpace();
+    } else if(e.which == LEFT || e.which == UP ||
+              e.which == RIGHT || e.which == DOWN) {
+        e.preventDefault();
+        pressArrowKey(e.which);
+    }
+    
+    // alert("Event: " + e);
+});
+
+
+
 
 var BoxType = {
+    player_bomb: -1,
     blank: 0,
     wall: 1,
     brick: 2,
@@ -41,7 +86,7 @@ var BoxType = {
     explosion: 5,
     powerup_0: 6,
     powerup_1: 7,
-    powerup_2: 8   
+    powerup_2: 8
 };
 
 var game_map = new Array(mapW);
@@ -71,6 +116,7 @@ $j(document).ready(function() {
         7: document.getElementById("powerup-1"),
         8: document.getElementById("powerup-2")
     }
+    images[-1] = document.getElementById("player-bomb");
 });
 
 
@@ -87,6 +133,8 @@ function draw_board() {
 }
 
 now.update_game_map = function(g) {
+    state = State.input;
+    
     for (var i=0; i<mapW; i++) {
         for (var j=0; j<mapH; j++) {
             game_map[i][j] = g[i][j];
@@ -113,3 +161,43 @@ now.ready(function() {
 
     draw_board();
 });
+
+
+$j(window).resize(function() {
+    ctx.canvas.width  = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+});
+
+function pressArrowKey(key) {
+    if (state != State.input) {
+        return;
+    }
+    
+    switch(key) {
+    case LEFT:
+        now.send_update(UpdateType.left);
+        break;
+    case RIGHT:
+        now.send_update(UpdateType.right);
+        break;
+    case UP:
+        now.send_update(UpdateType.up);
+        break;
+    case DOWN:
+        now.send_update(UpdateType.down);
+        break;
+    default:
+        break;
+    }
+
+    state = State.wait;
+}
+
+function pressSpace() {
+    if (state != State.input) {
+        return;
+    }
+
+    now.send_update(UpdateType.bomb);
+    state = State.wait;
+}

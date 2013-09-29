@@ -2,6 +2,7 @@ var prototype = require('prototype');
 var sets = require('simplesets');
 
 var BoxType = {
+    player_bomb: -1,
     blank: 0,
     wall: 1,
     brick: 2,
@@ -52,8 +53,8 @@ var humans = new sets.Set();
 
 var players_by_id = {};
 
-var mapW = 100;
-var mapH = 100;
+var mapW = 37;
+var mapH = 18;
 
 
 var map_objects = new Array(mapW);
@@ -82,7 +83,7 @@ function generate_map() {
 }
 
 function set_object(pos, obj) {
-    console.log(pos + '');
+    //console.log(pos + '');
     map_objects[pos[0]][pos[1]] = obj;
 }
 
@@ -324,7 +325,7 @@ var Player = Class.create({
         this.position = position;
         this.max_bombs = max_bombs ? max_bombs : 1;
         this.power = power ? power : 1;
-        this.bombinv = max_bombs;
+        this.bombinv = this.max_bombs;
         this.alive = true;
         this.num = num ? num : 0;
         
@@ -368,6 +369,8 @@ var Player = Class.create({
             return;
         }
 
+        //console.log('p: ' + new_position);
+
         if (!can_move(new_position) || new_position == this.position) {
             return;
         }
@@ -387,11 +390,6 @@ var Player = Class.create({
         set_object(new_position, this);
         this.position = new_position;
 
-        if ( this.computer) {
-            this.repeat_move_delay = computer_move_delay;
-        } else {
-            this.repeat_move_delay = player_move_delay;
-        }
     },
 
     move: function(dir) {
@@ -501,7 +499,11 @@ function draw_players() {
     var arr = humans.array();
     for (var i=0; i<arr.length; i++) {
         var p = arr[i].position;
-        render_map[p[0]][p[1]] = BoxType.player;
+        if (render_map[p[0]][p[1]] == BoxType.bomb) {
+            render_map[p[0]][p[1]] = BoxType.player_bomb;
+        } else {
+            render_map[p[0]][p[1]] = BoxType.player;
+        }
     }
 }
 
@@ -563,7 +565,13 @@ function send_update(uuid, type) {
 function perform_human_updates() {
     for(var i=0; i<player_updates.length; i++) {
         var u = player_updates[i];
+        //console.log('update: ' + u.uuid + ' ' + u.type);
+
         var p = players_by_id[u.uuid];
+        if (p == undefined) {
+            continue;
+        }
+        
         if (u.type < 4) {
             p.move(u.type);
         } else if(u.type == UpdateType.bomb) {
@@ -606,6 +614,15 @@ function update_stuff(t) {
     update_humans(t);
 }
 
+function create_player(uuid) {
+    var x = Math.floor(Math.random()*mapW);
+    var y = Math.floor(Math.random()*mapH);
+    var p = new Player(uuid, [x,y])
+    humans.add(p);
+    players_by_id[uuid] = p;
+}
+
 exports.draw_stuff = draw_stuff;
 exports.send_update = send_update;
 exports.update_stuff = update_stuff;
+exports.create_player = create_player;
