@@ -74,7 +74,7 @@ var port = process.env.PORT || 8080;
 
 // Point the server to listen to the given port for incoming
 // requests.
-server.listen( process.env.PORT );
+server.listen( port );
 
 
 
@@ -99,7 +99,11 @@ server.listen( process.env.PORT );
     // Everyone contains an object called "now" (ie. everyone.now) -
     // this allows variables and functions to be shared between the
     // server and the client.
-    var everyone = nowjs.initialize( server );
+    var everyone = nowjs.initialize( server, { socketio: {"transports":
+                                                          ["xhr-polling"],
+                                                         "polling duration": 10
+                                                         }
+                                             } );
     
     
     // Create primary key to keep track of all the clients that
