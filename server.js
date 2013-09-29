@@ -186,7 +186,7 @@ server.listen( port );
         // console.log("update");
         classes.update_stuff(UPDATE_DELAY);
         everyone.now.send_map();
-        setTimeout(update, UPDATE_DELAY+50);
+        setTimeout(update, UPDATE_DELAY+10);
     }
 
     update();
