@@ -70,9 +70,11 @@ var server = http.createServer(
     }
 );
 
+var port = process.env.PORT || 8080;
+
 // Point the server to listen to the given port for incoming
 // requests.
-server.listen( 8080 );
+server.listen( process.env.PORT );
 
 
 
