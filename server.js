@@ -7,7 +7,7 @@ var fileSystem = require( "fs" );
 
 var classes = require("./classes.js");
 
-var UPDATE_DELAY = 100;
+var UPDATE_DELAY = 150;
 
 // ---------------------------------------------------------- //
 // ---------------------------------------------------------- //
