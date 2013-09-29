@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NowJS And Node.js Realtime Communication</title>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="./libs/prototype.js"></script>
+    <script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
+
+    <!--
+        The NowJS HTTP augmentation will take care of routing
+        this - we don't actually have this physical file stored
+        at this file path.
+      -->
+    <script type="text/javascript" src="/nowjs/now.js"></script>
+  </head>
+  <body>
+
+    <img id="blank" src="img/blank.png" class="Hidden" />
+    <img id="player" src="img/player.png" class="Hidden" />
+    <img id="bomb" src="img/squarebomb.png" class="Hidden" />
+    <img id="explosion" src="img/explosion.png" class="Hidden" />
+    <img id="wall" src="img/wall.png" class="Hidden" />
+    <img id="brick" src="img/brick.png" class="Hidden" />
+    <img id="powerup-0" src="img/powerup_extrabombs.png" class="Hidden" />
+    <img id="powerup-1" src="img/powerup_extrapower.png" class="Hidden" />
+    <img id="powerup-2" src="img/blank.png" class="Hidden" />
+    
+    
+    <canvas id="myCanvas">Your browser does not support the HTML5 canvas tag.</canvas>
+
+    <!-- client-side script. -->
+    <script type="text/javascript" src="bomberman.js"> </script>
+
+  </body>
+</html>     
