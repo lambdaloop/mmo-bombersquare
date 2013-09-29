@@ -7,7 +7,7 @@ var fileSystem = require( "fs" );
 
 var classes = require("./classes.js");
 
-var UPDATE_DELAY = 150;
+var UPDATE_DELAY = 200;
 
 // ---------------------------------------------------------- //
 // ---------------------------------------------------------- //
@@ -186,7 +186,7 @@ server.listen( port );
         // console.log("update");
         classes.update_stuff(UPDATE_DELAY);
         everyone.now.send_map();
-        setTimeout(update, UPDATE_DELAY);
+        setTimeout(update, UPDATE_DELAY+50);
     }
 
     update();
