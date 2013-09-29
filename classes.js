@@ -82,6 +82,7 @@ function generate_map() {
 }
 
 function set_object(pos, obj) {
+    console.log(pos + '');
     map_objects[pos[0]][pos[1]] = obj;
 }
 
@@ -170,10 +171,11 @@ var Explosion = Class.create({
         this.timeleft = 1000;
 
         var ps = this.explode();
-        ps.append(this.position);
+        ps.push(this.position);
         this.exploded_positions = ps;
 
-        for(var pos in this.exploded_positions) {
+        for(var i=0; i<ps.length; i++) {
+            var pos = ps[i];
             set_object(pos, this);
 
             var player = get_player(this.position);
@@ -191,7 +193,9 @@ var Explosion = Class.create({
         }
     },
     remove: function() {
-        for(var pos in this.exploded_positions) {
+        
+        for(var i=0; i< this.exploded_positions.length; i++) {
+            var pos = this.exploded_positions[i];
             set_object(pos, null);
             explosions.remove(this);
         }
@@ -208,14 +212,14 @@ var Explosion = Class.create({
             var axis = arr[x][0];
             var increment = arr[x][1];
 
-            new_position = list(this.position);
+            new_position = this.position.slice(0);
             
             for(var i=0; i<this.power; i++) {
                 new_position[axis] += increment;
                 if (!is_valid_position(new_position)) {
                     break;
                 } else if (can_explosion_pass(new_position)) {
-                    final.append(list(new_position));
+                    final.push(new_position.slice(0));
                 } else {
                     obj = get_object(new_position);
                     
@@ -227,7 +231,7 @@ var Explosion = Class.create({
                             obj.explode();
                         } else if (obj instanceof Player) {
                             obj.die();
-                            final.append(list(new_position));
+                            final.push(new_position.slice(0));
                         }
                         
                         if (obj instanceof Explosion) {
@@ -247,8 +251,8 @@ var Explosion = Class.create({
                     // need extra check for players because player may not be
                     // on map if placing bomb
                     p = get_player(new_position);
-                    if (p != null) {
-                        final.append(list(new_position));
+                    if (p) {
+                        final.push(new_position.slice(0));
                         p.die();
                     }
                     break;
@@ -349,7 +353,7 @@ var Player = Class.create({
         
         if ( obj instanceof Powerup ) {
             this.use_powerup(obj);
-            set_object(this.powerup, this);
+            set_object(this.powerup.position, this);
         } else if (obj instanceof Explosion) {
             this.die();
         }
@@ -392,7 +396,7 @@ var Player = Class.create({
 
     move: function(dir) {
 
-        new_position = list(this.position)
+        new_position = this.position.slice(0);
         if ( dir == Direction.right ) {
             new_position[0] += 1
         } else if ( dir == Direction.left ) {
@@ -532,6 +536,14 @@ function draw_stuff() {
 }
 
 generate_map();
+var p = new Player(10, [1,1]);
+var b = new Bomb(5, [5,5], p);
+
+humans.add(p);
+bombs.add(b);
+
+map_objects[p.position[0]][p.position[1]] = p;
+map_objects[b.position[0]][b.position[1]] = p;
 
 
 var Update = Class.create({
@@ -558,6 +570,8 @@ function perform_human_updates() {
             p.drop_bomb();
         }
     }
+
+    player_updates = [];
     
 }
 
@@ -569,7 +583,7 @@ function update_bombs(t) {
     }
 }
 
-function update_players(t) {
+function update_humans(t) {
     var arr = humans.array();
     for (var i=0; i<arr.length; i++) {
         arr[i].update(t);
@@ -593,3 +607,5 @@ function update_stuff(t) {
 }
 
 exports.draw_stuff = draw_stuff;
+exports.send_update = send_update;
+exports.update_stuff = update_stuff;

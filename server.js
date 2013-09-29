@@ -75,6 +75,7 @@ var server = http.createServer(
 server.listen( 8080 );
 
 
+
 // ---------------------------------------------------------- //
 // ---------------------------------------------------------- //
 
@@ -120,7 +121,7 @@ server.listen( 8080 );
         }
     );
 
-        // Add a broadcast function to *every* client that they can call
+    // Add a broadcast function to *every* client that they can call
     // when they want to sync the position of the draggable target.
     // In the context of this callback, "this" refers to the
     // specific client that is communicating with the server.
@@ -135,11 +136,11 @@ server.listen( 8080 );
         latestPosition = position;
         everyone.now.filterUpdateBroadcast( this.now.uuid, position );
     };
-
+    
     everyone.now.send_map = function() {
         var m = classes.draw_stuff();
         everyone.now.update_game_map(m);
-    }
+    };
     
     
     // We want the "update" messages to go to every client except
@@ -169,6 +170,15 @@ server.listen( 8080 );
         this.now.updatePosition(latestPosition);
     };
 
+    
+    function update() {
+        // console.log("update");
+        classes.update_stuff(500);
+        everyone.now.send_map();
+        setTimeout(update, 500);
+    }
+
+    update();
     
 })();
 
